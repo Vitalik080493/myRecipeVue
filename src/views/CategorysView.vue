@@ -1,0 +1,67 @@
+<script setup lang="ts">
+import ItemList from '../components/ItemList.vue'
+import { collection, getDocs } from 'firebase/firestore/lite';
+import { ref } from 'vue';
+import { useFirebase } from '@/stores/data';
+
+const store = useFirebase();
+const { db } = store;
+
+// Список категорий
+let listName = ref([
+  {
+    id: '01',
+    name: 'Загрузка списка'
+  },
+])
+
+// Получаем список категорий
+async function getCategorys(db: any) {
+  const categorysCol = collection(db, 'Recipe');
+  const categorysSnapshot = await getDocs(categorysCol);
+  const categorysList = categorysSnapshot.docs.map(doc => doc.data());
+  return categorysList;
+}
+
+const list = getCategorys(db);
+list.then((result) => {
+  listName.value = result as { id: string, name: string }[];
+},
+(error) => {
+  console.log(error)
+}
+);
+</script>
+
+<template>
+  <main>
+    <ul>
+      <li v-for="l in listName" :key="l.id">
+        <ItemList :href="'/recipes/' + l.id">
+          <template #name>{{l.name}}</template>
+        </ItemList>
+      </li>
+    </ul>
+  </main>
+</template>
+
+<style scoped>
+  main{
+    height: calc(100vh - 61px);
+    overflow-y: scroll;
+  }
+  ul {
+    list-style: none;
+    padding-inline-start: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  li{
+    display: flex;
+    height: 70px;
+    width: 95%;
+  }
+</style>
