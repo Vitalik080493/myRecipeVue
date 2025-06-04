@@ -73,32 +73,26 @@ list.then((result) => {
     <div class="titel">
       <h1>{{ recipe.name }}</h1>
     </div>
-    <div class="listIngredient">
-      <ul>
-        <li v-for="i in listIngredient" :key="i.id">
-          {{ i.name }} - {{ i.count }} {{ i.unit }}
-        </li>
-      </ul>
-    </div>
     <div class="recipe">
-      <p>
-        {{ recipe.recipe }}
-      </p>
+      <div class="listIngredient">
+        <ul>
+          <li v-for="i in listIngredient" :key="i.id">
+            {{ i.name }} - {{ i.count }} {{ i.unit }}
+          </li>
+        </ul>
+      </div>
+      <div class="description">
+        <p>
+          {{ recipe.recipe }}
+        </p>
+      </div>
     </div>
-    <!-- <ul>
-      <li v-for="l in listName" :key="l.id">
-        <ItemList :id="l.id">
-          <template #name>{{l.name}}</template>
-        </ItemList>
-      </li>
-    </ul> -->
   </main>
 </template>
 
 <style scoped>
   main{
     height: 100vh;
-    overflow: hidden;
     background-image: url(../assets/fone2.jpeg);
     /* background-size: contain; */
     background-repeat: round;
@@ -114,7 +108,14 @@ list.then((result) => {
     justify-content: center;
   }
   .titel h1{
+    font-size: 1.5em;
     margin: 0px;
+  }
+  .recipe{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
   }
   ul {
     list-style: none;
@@ -126,8 +127,5 @@ list.then((result) => {
   }
   li{
     display: flex;
-  }
-  .recipe{
-
   }
 </style>
