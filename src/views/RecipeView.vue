@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import ItemList from '../components/ItemList.vue'
 import { collection, getDocs, getDoc, doc } from 'firebase/firestore/lite';
-import { ref, type Ref } from 'vue';
+import { reactive, ref, type Reactive, type Ref } from 'vue';
 // import { reactive } from 'vue';
 import { useFirebase } from '@/stores/data';
 // import router from '@/router';
@@ -14,22 +14,22 @@ const idCategory = useRoute().params.idCategory as string
 const idRecipe = useRoute().params.idRecipe as string
 
 // Рецепт
-let recipe: Ref<Recipe> = ref(
+let recipe: Reactive<Recipe> = reactive(
   {
-    category: 'Супы',
-    id: '1622215953464',
+    category: '',
+    id: '',
     img: '',
-    name: 'Окрошка',
-    recipe: 'Отварить картошку и яйца. Все ингредиенты нарезать кубиком. Зелень мелко покрошить. Перемешать. Залить кефиром, минералкой',
+    name: '',
+    recipe: '',
   }
 )
 
 let listIngredient: Ref<Ingredient[]> = ref([
   {
-    count: '6',
-    id: '101',
-    name: 'Картошка',
-    unit: 'шт.',
+    count: '',
+    id: '',
+    name: '',
+    unit: '',
   },
 ])
 
@@ -38,12 +38,15 @@ async function getRecipe(db: any) {
   const recipeDoc = doc(db, 'Recipe', idCategory, 'ListRecipe', idRecipe);
   const recipeSnap = await getDoc(recipeDoc);
   if (recipeSnap.exists()) {
+    recipe = recipeSnap.data() as Recipe;
     console.log("Document data:", recipeSnap.data());
   } else {
     console.log("No such document!");
   }
   return recipeSnap;
 }
+
+getRecipe(db);
 
 // Получаем список ингредиентов
 async function getIngredients(db: any) {
@@ -52,8 +55,6 @@ async function getIngredients(db: any) {
   const ingredientsList = ingredientsSnapshot.docs.map(doc => doc.data());
   return ingredientsList;
 }
-
-getRecipe(db);
 
 const list = getIngredients(db);
 list.then((result) => {
