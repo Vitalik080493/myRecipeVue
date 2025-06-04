@@ -1,27 +1,20 @@
 <script setup lang="ts">
-import ItemList from '../components/ItemList.vue'
+// import ItemList from '../components/ItemList.vue'
 import { collection, getDocs, getDoc, doc } from 'firebase/firestore/lite';
-import { ref } from 'vue';
-import { reactive } from 'vue';
+import { ref, type Ref } from 'vue';
+// import { reactive } from 'vue';
 import { useFirebase } from '@/stores/data';
-import router from '@/router';
+// import router from '@/router';
 import { useRoute } from 'vue-router'
+import type { Recipe, Ingredient } from '../model/interfaces'
 
 const store = useFirebase();
 const { db } = store;
 const idCategory = useRoute().params.idCategory as string
 const idRecipe = useRoute().params.idRecipe as string
 
-interface Recipe{
-  category: string,
-  id: string,
-  img: string,
-  name: string,
-  recipe: string,
-}
-
 // Рецепт
-let recipe: Recipe =
+let recipe: Ref<Recipe> = ref(
   {
     category: 'Супы',
     id: '1622215953464',
@@ -29,36 +22,68 @@ let recipe: Recipe =
     name: 'Окрошка',
     recipe: 'Отварить картошку и яйца. Все ингредиенты нарезать кубиком. Зелень мелко покрошить. Перемешать. Залить кефиром, минералкой',
   }
+)
 
-// Получаем список категорий
-async function getRecipes(db: any) {
-  console.log('1')
-  const recipesDoc = doc(db, 'Recipe', '01', 'ListRecipe', '1622215953464');
-  const recipeSnap = await getDoc(recipesDoc);
+let listIngredient: Ref<Ingredient[]> = ref([
+  {
+    count: '6',
+    id: '101',
+    name: 'Картошка',
+    unit: 'шт.',
+  },
+])
+
+// Получаем рецепт
+async function getRecipe(db: any) {
+  const recipeDoc = doc(db, 'Recipe', idCategory, 'ListRecipe', idRecipe);
+  const recipeSnap = await getDoc(recipeDoc);
   if (recipeSnap.exists()) {
     console.log("Document data:", recipeSnap.data());
   } else {
-  // docSnap.data() will be undefined in this case
     console.log("No such document!");
   }
   return recipeSnap;
 }
 
-getRecipes(db);
-// const list = getRecipes(db);
-// list.then((result) => {
-//   // console.log(result);
-//   recipe = result as Recipe;
-//   console.log(listName);
-// },
-// (error) => {
-//   console.log(error)
-// }
-// );
+// Получаем список ингредиентов
+async function getIngredients(db: any) {
+  const ingredientsCol = collection(db, 'Recipe', idCategory, 'ListRecipe', idRecipe, 'ListIngredient');
+  const ingredientsSnapshot = await getDocs(ingredientsCol);
+  const ingredientsList = ingredientsSnapshot.docs.map(doc => doc.data());
+  return ingredientsList;
+}
+
+getRecipe(db);
+
+const list = getIngredients(db);
+list.then((result) => {
+  listIngredient.value = result as Ingredient[];
+  console.log(listIngredient.value);
+},
+(error) => {
+  console.log(error)
+}
+);
+
 </script>
 
 <template>
   <main>
+    <div class="titel">
+      <h1>{{ recipe.name }}</h1>
+    </div>
+    <div class="listIngredient">
+      <ul>
+        <li v-for="i in listIngredient" :key="i.id">
+          {{ i.name }} - {{ i.count }} {{ i.unit }}
+        </li>
+      </ul>
+    </div>
+    <div class="recipe">
+      <p>
+        {{ recipe.recipe }}
+      </p>
+    </div>
     <!-- <ul>
       <li v-for="l in listName" :key="l.id">
         <ItemList :id="l.id">
@@ -71,12 +96,24 @@ getRecipes(db);
 
 <style scoped>
   main{
-    height: calc(100vh);
-    overflow-y: scroll;
+    height: 100vh;
+    overflow: hidden;
     background-image: url(../assets/fone2.jpeg);
     /* background-size: contain; */
     background-repeat: round;
     /* background-position: center; */
+    display: flex;
+    flex-direction: column;
+    padding: 190px 70px 190px 70px;
+    gap: 20px;
+  }
+  .titel{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .titel h1{
+    margin: 0px;
   }
   ul {
     list-style: none;
@@ -84,12 +121,12 @@ getRecipes(db);
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    margin: 0px;
   }
   li{
     display: flex;
-    height: 70px;
-    width: 95%;
+  }
+  .recipe{
+
   }
 </style>

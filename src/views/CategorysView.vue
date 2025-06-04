@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import ItemList from '../components/ItemList.vue'
 import { collection, getDocs } from 'firebase/firestore/lite';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useFirebase } from '@/stores/data';
+import type { Category } from '../model/interfaces'
 
 const store = useFirebase();
 const { db } = store;
 
 // Список категорий
-let listName = ref([
+let listName: Ref<Category[]> = ref([
   {
     id: '01',
     name: 'Загрузка списка'
@@ -25,7 +26,7 @@ async function getCategorys(db: any) {
 
 const list = getCategorys(db);
 list.then((result) => {
-  listName.value = result as { id: string, name: string }[];
+  listName.value = result as Category[];
 },
 (error) => {
   console.log(error)

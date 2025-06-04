@@ -1,25 +1,18 @@
 <script setup lang="ts">
 import ItemList from '../components/ItemList.vue'
 import { collection, getDocs } from 'firebase/firestore/lite';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useFirebase } from '@/stores/data';
 import router from '@/router';
 import { useRoute } from 'vue-router'
+import type { Recipe } from '../model/interfaces'
 
 const store = useFirebase();
 const { db } = store;
 const idCategory = useRoute().params.idCategory as string
 
-interface Recipe{
-  category: string,
-  id: string,
-  img: string,
-  name: string,
-  recipe: string,
-}
-
 // Список категорий
-let listName = ref([
+let listName: Ref<Recipe[]> = ref([
   {
     category: 'Супы',
     id: '1622215953464',
