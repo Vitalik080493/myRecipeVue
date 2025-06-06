@@ -77,7 +77,10 @@ list.then((result) => {
       <div class="listIngredient">
         <ul>
           <li v-for="i in listIngredient" :key="i.id">
-            {{ i.name }} - {{ i.count }} {{ i.unit }}
+            <div class="listIngredient__ingredient ingredient">
+              <div class="ingredient__name">{{ i.name }}</div>
+              <div class="ingredient__count">{{ i.count != "0" ? i.count : ""}} <span>{{ i.unit }}</span></div>
+            </div>
           </li>
         </ul>
       </div>
@@ -90,7 +93,7 @@ list.then((result) => {
   </main>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
   main{
     height: 100vh;
     background-image: url(../assets/fone2.jpeg);
@@ -100,32 +103,56 @@ list.then((result) => {
     display: flex;
     flex-direction: column;
     padding: 190px 70px 190px 70px;
-    gap: 20px;
+    gap: 10px;
   }
+
   .titel{
     display: flex;
     align-items: center;
     justify-content: center;
+
+    h1{
+      font-size: 1.5em;
+      margin: 0px;
+      text-align: center;
+    }
   }
-  .titel h1{
-    font-size: 1.5em;
-    margin: 0px;
-  }
+
   .recipe{
     display: flex;
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
   }
+
   ul {
     list-style: none;
-    padding-inline-start: 0px;
     width: 100%;
     display: flex;
     flex-direction: column;
     margin: 0px;
+    padding: 0px;
+
+    li{
+      background: url("../assets/point_black.svg") no-repeat left center;
+      background-size: 8px;
+      padding-inline-start: 15px;
+    }
   }
-  li{
+  
+  .ingredient{
     display: flex;
+    /* flex-direction: row; */
+    justify-content: space-between;
+    #__count {
+      min-width: 60px;
+      display: flex;
+      align-self: center;
+      justify-content: end;
+
+      span {
+        display: inline-block;
+      }
+    }
   }
 </style>
