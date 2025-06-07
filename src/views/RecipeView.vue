@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // import ItemList from '../components/ItemList.vue'
+import Loading from '../components/Loading.vue'
 import { collection, getDocs, getDoc, doc } from 'firebase/firestore/lite';
 import { reactive, ref, type Reactive, type Ref } from 'vue';
 // import { reactive } from 'vue';
@@ -12,6 +13,7 @@ const store = useFirebase();
 const { db } = store;
 const idCategory = useRoute().params.idCategory as string
 const idRecipe = useRoute().params.idRecipe as string
+let isVisible = false;
 
 // Рецепт
 let recipe: Reactive<Recipe> = reactive(
@@ -39,7 +41,6 @@ async function getRecipe(db: any) {
   const recipeSnap = await getDoc(recipeDoc);
   if (recipeSnap.exists()) {
     recipe = recipeSnap.data() as Recipe;
-    console.log("Document data:", recipeSnap.data());
   } else {
     console.log("No such document!");
   }
@@ -59,7 +60,7 @@ async function getIngredients(db: any) {
 const list = getIngredients(db);
 list.then((result) => {
   listIngredient.value = result as Ingredient[];
-  console.log(listIngredient.value);
+  isVisible = true;
 },
 (error) => {
   console.log(error)
@@ -90,6 +91,8 @@ list.then((result) => {
         </p>
       </div>
     </div>
+
+    <Loading :class="{ invisible: isVisible }"/>
   </main>
 </template>
 
@@ -123,6 +126,10 @@ list.then((result) => {
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   ul {

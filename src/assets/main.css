@@ -27,3 +27,7 @@ a,
 body {
   overflow: hidden;
 }
+
+.invisible{
+  visibility: hidden;
+}

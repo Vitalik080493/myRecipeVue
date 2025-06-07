@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ItemList from '../components/ItemList.vue'
+import Loading from '../components/Loading.vue'
 import { collection, getDocs } from 'firebase/firestore/lite';
 import { ref, type Ref } from 'vue';
 import { useFirebase } from '@/stores/data';
@@ -10,6 +11,7 @@ import type { Recipe } from '../model/interfaces'
 const store = useFirebase();
 const { db } = store;
 const idCategory = useRoute().params.idCategory as string
+let isVisible = false;
 
 // Список категорий
 let listName: Ref<Recipe[]> = ref([
@@ -33,6 +35,7 @@ async function getRecipes(db: any) {
 const list = getRecipes(db);
 list.then((result) => {
   listName.value = result as Recipe[];
+  isVisible = true;
 },
 (error) => {
   console.log(error)
@@ -49,6 +52,7 @@ list.then((result) => {
         </ItemList>
       </li>
     </ul>
+    <Loading :class="{ invisible: isVisible }"/>
   </main>
 </template>
 
