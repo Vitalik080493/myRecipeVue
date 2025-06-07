@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ItemList from '../components/ItemList.vue';
-import ItemLoading from '../components/ItemLoading.vue';
+// import ItemLoading from '../components/ItemLoading.vue';
 import { collection, getDocs } from 'firebase/firestore/lite';
 import { ref, type Ref } from 'vue';
 import { useFirebase } from '@/stores/data';
@@ -52,7 +52,7 @@ list.then((result) => {
         </ItemList>
       </li>
     </ul>
-    <ItemLoading :class="{ invisible: isVisible }"/>
+    <!-- <ItemLoading :class="{ invisible: isVisible }"/> -->
   </main>
 </template>
 
