@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import ItemList from '../components/ItemList.vue'
-import Loading from '../components/Loading.vue'
+import ItemLoading from '../components/ItemLoading.vue';
 import { collection, getDocs, getDoc, doc } from 'firebase/firestore/lite';
 import { reactive, ref, type Reactive, type Ref } from 'vue';
 // import { reactive } from 'vue';
@@ -92,7 +92,7 @@ list.then((result) => {
       </div>
     </div>
 
-    <Loading :class="{ invisible: isVisible }"/>
+    <ItemLoading :class="{ invisible: isVisible }"/>
   </main>
 </template>
 
