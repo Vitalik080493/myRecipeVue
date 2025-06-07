@@ -1,11 +1,17 @@
 <script setup lang="ts">
+  import router from '@/router';
+
   const props = defineProps({
     href: String
   })
+
+  function send(){
+    router.push(props.href!)
+  }
   // const href = "/recipes/" + props.id;
 </script>
 <template>
-  <a :href="props.href">
+  <a @click="send">
     <slot name="name"></slot>
   </a>
 </template>

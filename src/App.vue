@@ -1,13 +1,17 @@
 <script setup lang="ts">
-  import { RouterLink, RouterView } from 'vue-router'
+  import ItemLoading from './components/ItemLoading2.vue';
+  import { RouterView } from 'vue-router'
+  import { loadingVisible } from '@/stores/data';
+
+  const visible = loadingVisible();
 </script>
 
 <template>
-  <!-- <header>
-    <h1>Категории</h1>
-  </header> -->
 
   <RouterView />
+
+  <ItemLoading :class="{ invisible: visible.isVisible }"/>
+
 </template>
 
 <style scoped>
@@ -21,5 +25,10 @@
     align-items: center;
     justify-content: center;
     background-color: green;
+  }
+  .test{
+    position: absolute;
+    top: 0px;
+    left: 0px;
   }
 </style>

@@ -28,3 +28,9 @@ export const useFirebase = defineStore('db', () =>{
 
   return {db};
 })
+
+export const loadingVisible = defineStore('visible', () => {
+  const isVisible = ref(false);
+
+  return { isVisible }
+})

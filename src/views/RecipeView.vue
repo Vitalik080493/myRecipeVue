@@ -1,11 +1,7 @@
 <script setup lang="ts">
-// import ItemList from '../components/ItemList.vue'
-import ItemLoading from '../components/ItemLoading2.vue';
 import { collection, getDocs, getDoc, doc } from 'firebase/firestore/lite';
 import { reactive, ref, type Reactive, type Ref } from 'vue';
-// import { reactive } from 'vue';
-import { useFirebase } from '@/stores/data';
-// import router from '@/router';
+import { useFirebase, loadingVisible } from '@/stores/data';
 import { useRoute } from 'vue-router'
 import type { Recipe, Ingredient } from '../model/interfaces'
 
@@ -13,7 +9,7 @@ const store = useFirebase();
 const { db } = store;
 const idCategory = useRoute().params.idCategory as string
 const idRecipe = useRoute().params.idRecipe as string
-let isVisible = false;
+const visible = loadingVisible();
 
 // Рецепт
 let recipe: Reactive<Recipe> = reactive(
@@ -37,6 +33,7 @@ let listIngredient: Ref<Ingredient[]> = ref([
 
 // Получаем рецепт
 async function getRecipe(db: any) {
+  visible.isVisible = false; // показываем загрузку
   const recipeDoc = doc(db, 'Recipe', idCategory, 'ListRecipe', idRecipe);
   const recipeSnap = await getDoc(recipeDoc);
   if (recipeSnap.exists()) {
@@ -60,7 +57,7 @@ async function getIngredients(db: any) {
 const list = getIngredients(db);
 list.then((result) => {
   listIngredient.value = result as Ingredient[];
-  isVisible = true;
+  visible.isVisible = true;
 },
 (error) => {
   console.log(error)
@@ -91,8 +88,6 @@ list.then((result) => {
         </p>
       </div>
     </div>
-
-    <ItemLoading :class="{ invisible: isVisible }"/>
   </main>
 </template>
 
@@ -149,7 +144,6 @@ list.then((result) => {
   
   .ingredient{
     display: flex;
-    /* flex-direction: row; */
     justify-content: space-between;
     #__count {
       min-width: 60px;

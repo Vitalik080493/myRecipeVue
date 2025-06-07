@@ -1,25 +1,25 @@
 <script setup lang="ts">
 import ItemList from '../components/ItemList.vue';
-import ItemLoading from '../components/ItemLoading2.vue';
 import { collection, getDocs } from 'firebase/firestore/lite';
 import { ref, type Ref } from 'vue';
-import { useFirebase } from '@/stores/data';
+import { useFirebase, loadingVisible } from '@/stores/data';
 import type { Category } from '../model/interfaces'
 
 const store = useFirebase();
 const { db } = store;
-let isVisible = false;
+const visible = loadingVisible();
 
 // Список категорий
 let listName: Ref<Category[]> = ref([
   {
-    id: '01',
-    name: 'Загрузка списка'
+    id: '',
+    name: ''
   },
 ])
 
 // Получаем список категорий
 async function getCategorys(db: any) {
+  visible.isVisible = false;
   const categorysCol = collection(db, 'Recipe');
   const categorysSnapshot = await getDocs(categorysCol);
   const categorysList = categorysSnapshot.docs.map(doc => doc.data());
@@ -29,7 +29,7 @@ async function getCategorys(db: any) {
 const list = getCategorys(db);
 list.then((result) => {
   listName.value = result as Category[];
-  isVisible = true;
+  visible.isVisible = true;
 },
 (error) => {
   console.log(error)
@@ -47,8 +47,6 @@ list.then((result) => {
       </li>
     </ul>
   </main>
-
-  <ItemLoading :class="{ invisible: isVisible }"/>
 </template>
 
 <style lang="less" scoped>

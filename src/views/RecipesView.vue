@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import ItemList from '../components/ItemList.vue';
-import ItemLoading from '../components/ItemLoading2.vue';
 import { collection, getDocs } from 'firebase/firestore/lite';
 import { ref, type Ref } from 'vue';
-import { useFirebase } from '@/stores/data';
-import router from '@/router';
+import { useFirebase, loadingVisible } from '@/stores/data';
 import { useRoute } from 'vue-router'
 import type { Recipe } from '../model/interfaces'
 
 const store = useFirebase();
 const { db } = store;
-const idCategory = useRoute().params.idCategory as string
-let isVisible = false;
+const idCategory = useRoute().params.idCategory as string;
+const visible = loadingVisible();
 
 // Список категорий
 let listName: Ref<Recipe[]> = ref([
   {
-    category: 'Супы',
-    id: '1622215953464',
+    category: '',
+    id: '',
     img: '',
-    name: 'Окрошка',
-    recipe: 'Отварить картошку и яйца. Все ингредиенты нарезать кубиком. Зелень мелко покрошить. Перемешать. Залить кефиром, минералкой',
+    name: '',
+    recipe: '',
   },
 ])
 
 // Получаем список категорий
 async function getRecipes(db: any) {
+  visible.isVisible = false;
   const recipesCol = collection(db, 'Recipe', idCategory, 'ListRecipe');
   const recipesSnapshot = await getDocs(recipesCol);
   const recipesList = recipesSnapshot.docs.map(doc => doc.data());
@@ -35,7 +34,7 @@ async function getRecipes(db: any) {
 const list = getRecipes(db);
 list.then((result) => {
   listName.value = result as Recipe[];
-  isVisible = true;
+  visible.isVisible = true;
 },
 (error) => {
   console.log(error)
@@ -52,7 +51,6 @@ list.then((result) => {
         </ItemList>
       </li>
     </ul>
-    <ItemLoading :class="{ invisible: isVisible }"/>
   </main>
 </template>
 
