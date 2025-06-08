@@ -28,6 +28,7 @@ async function getRecipes(db: any) {
   const recipesCol = collection(db, 'Recipe', idCategory, 'ListRecipe');
   const recipesSnapshot = await getDocs(recipesCol);
   const recipesList = recipesSnapshot.docs.map(doc => doc.data());
+  console.log(recipesList);
   return recipesList;
 }
 

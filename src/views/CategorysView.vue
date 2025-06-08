@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ItemList from '../components/ItemList.vue';
+import ItemCategory from '../components/ItemCategory.vue';
 import { collection, getDocs } from 'firebase/firestore/lite';
 import { ref, type Ref } from 'vue';
 import { useFirebase, loadingVisible } from '@/stores/data';
@@ -39,11 +39,14 @@ list.then((result) => {
 
 <template>
   <main>
+    <div class="titel">
+      <h1>Категории:</h1>
+    </div>
     <ul>
       <li v-for="l in listName" :key="l.id">
-        <ItemList :href="'/recipes/' + l.id">
+        <ItemCategory :href="'/recipes/' + l.id" :id="l.id">
           <template #name>{{l.name}}</template>
-        </ItemList>
+        </ItemCategory>
       </li>
     </ul>
   </main>
@@ -51,12 +54,32 @@ list.then((result) => {
 
 <style lang="less" scoped>
   main{
-    height: calc(100vh - 61px);
+    height: 100vh;
+    background-image: url(../assets/fone2.jpeg);
+    /* background-size: contain; */
+    background-repeat: round;
+    padding: 200px 70px 190px 70px;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .titel{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    h1{
+      font-size: 1.5em;
+      margin: 0px;
+      text-align: center;
+    }
+  }
   }
   ul {
     list-style: none;
-    padding-inline-start: 0px;
+    padding: 0px;
+    margin: 0px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -65,7 +88,8 @@ list.then((result) => {
   }
   li{
     display: flex;
-    height: 70px;
+    height: 50px;
     width: 95%;
+    border-radius: 30px;
   }
 </style>
